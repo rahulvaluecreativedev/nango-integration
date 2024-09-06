@@ -21,6 +21,7 @@ const action_1 = require("./controller/action");
 const webhook_1 = require("./controller/webhook");
 const connection_1 = require("./controller/connection");
 const automation_1 = require("./controller/automation");
+const utils_1 = require("./utils");
 const dbConnection_1 = __importDefault(require("./config/dbConnection"));
 (function () {
     return __awaiter(this, void 0, void 0, function* () {
@@ -29,10 +30,17 @@ const dbConnection_1 = __importDefault(require("./config/dbConnection"));
 })();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    return res.send("success");
+}));
 app.post("/api/addAction", action_1.addAction);
 app.post("/api/webhook", webhook_1.webhook);
 app.post("/api/newConnection", connection_1.addConnection);
 app.post("/api/newAutomation", automation_1.newAutomation);
+app.post("/api/sendEmail", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, utils_1.sendEmail)(req.body.config, req.body.emailData);
+    return res.send("hello");
+}));
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
