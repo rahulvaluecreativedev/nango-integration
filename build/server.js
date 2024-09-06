@@ -22,12 +22,14 @@ const webhook_1 = require("./controller/webhook");
 const connection_1 = require("./controller/connection");
 const automation_1 = require("./controller/automation");
 const utils_1 = require("./utils");
+const cors_1 = __importDefault(require("cors"));
 const dbConnection_1 = __importDefault(require("./config/dbConnection"));
 (function () {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, dbConnection_1.default)();
     });
 })();
+app.use((0, cors_1.default)({ origin: "*" }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
