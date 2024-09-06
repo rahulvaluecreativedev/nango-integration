@@ -22,6 +22,10 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (webhookType === "auth" && req.body.success) {
             yield connection_1.default.findOneAndUpdate({ connectionId: (_a = req.body) === null || _a === void 0 ? void 0 : _a.req.body }, { active: true });
         }
+        return res.status(200).json({
+            success: true,
+            message: "success"
+        });
     }
     catch (error) {
         console.log("error");
