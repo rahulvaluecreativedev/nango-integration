@@ -15,12 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.webhook = void 0;
 const connection_1 = __importDefault(require("../model/connection"));
 const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
         console.log("webhook request......", req.body);
         const webhookType = req.body.type;
         if (webhookType === "auth" && req.body.success) {
-            yield connection_1.default.findOneAndUpdate({ connectionId: (_a = req.body) === null || _a === void 0 ? void 0 : _a.req.body }, { active: true });
+            yield connection_1.default.findOneAndUpdate({ connectionId: req.body.connectionId }, { active: true });
         }
         return res.status(200).json({
             success: true,
@@ -28,7 +27,7 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        console.log("error");
+        console.log("error", error);
         return res.status(500).json({
             success: false,
             message: error.message
