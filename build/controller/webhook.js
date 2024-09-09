@@ -115,7 +115,7 @@ const findAutomation = (connectionId) => __awaiter(void 0, void 0, void 0, funct
             { $unwind: "$triggerName" },
             { $match: { trigger: new mongodb_1.ObjectId(findConn._id) } }
         ]);
-        return findAutom;
+        return findAutom[0];
     }
     catch (error) {
         console.log("error");
