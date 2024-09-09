@@ -24,12 +24,24 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (webhookType === "auth" && req.body.success) {
             yield connection_1.default.findOneAndUpdate({ connectionId: req.body.connectionId }, { active: true });
         }
+        if (webhookType === "sync") {
+            if (req.body.providerConfigKey === "google-email") {
+                console.log("google-mail...");
+            }
+            if (req.body.providerConfigKey === "slack") {
+                console.log("slack....");
+            }
+        }
         if (webhookType === "forwad") {
-            let myAutomation = yield findAutomation(webhookType);
-            console.log("myAutomation", myAutomation);
-            yield (0, utils_1.sendEmail)({
-                integrationId: "gmail1234", connectionId: myAutomation.connectionId, actionName: (_a = myAutomation.action) === null || _a === void 0 ? void 0 : _a.appUniqueName
-            }, myAutomation.triggerValue);
+            console.log("inside forwad....");
+            if (req.body.providerConfigKey === "slack") {
+                console.log("yes it is slack webhoook====");
+                let myAutomation = yield findAutomation(req.body.connectionId);
+                console.log("myAutomation", myAutomation);
+                yield (0, utils_1.sendEmail)({
+                    integrationId: "gmail1234", connectionId: myAutomation.connectionId, actionName: (_a = myAutomation.action) === null || _a === void 0 ? void 0 : _a.appUniqueName
+                }, myAutomation.triggerValue);
+            }
         }
         return res.status(200).json({
             success: true,
@@ -47,9 +59,11 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.webhook = webhook;
 const findAutomation = (connectionId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("inside the find automation===", connectionId);
         const findConn = yield connection_1.default.findOne({
             connectionId: connectionId
         }).lean();
+        console.log("findConn====", findConn);
         if (!findConn) {
             return null;
         }
