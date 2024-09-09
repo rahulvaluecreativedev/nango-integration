@@ -47,7 +47,7 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     let myAutomation = yield findAutomation(req.body.connectionId);
                     console.log("myAutomation", myAutomation);
                     yield (0, utils_1.sendEmail)({
-                        integrationId: myAutomation.actionPerform.integrationId, connectionId: myAutomation.actionPerform.connectionId, actionName: (_a = myAutomation.actionName) === null || _a === void 0 ? void 0 : _a.appUniqueName
+                        integrationId: myAutomation.actionPerform.integrationId, connectionId: myAutomation.actionPerform.connectionId, actionName: (_a = myAutomation.actionName) === null || _a === void 0 ? void 0 : _a.actionUniqueName
                     }, myAutomation.triggerValue);
                 }
             }
