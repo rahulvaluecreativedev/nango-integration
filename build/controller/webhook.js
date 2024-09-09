@@ -16,6 +16,7 @@ exports.webhook = void 0;
 const connection_1 = __importDefault(require("../model/connection"));
 const automation_1 = __importDefault(require("../model/automation"));
 const utils_1 = require("../utils");
+const mongodb_1 = require("mongodb");
 const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -29,18 +30,26 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log("google-mail...");
             }
             if (req.body.providerConfigKey === "slack") {
+                if (req.body.syncName === "channels") {
+                }
+                if (req.body.syncName === "users") {
+                }
+                if (req.body.syncName === "messages") {
+                }
                 console.log("slack....");
             }
         }
         if (webhookType === "forward") {
             console.log("inside forwad....");
             if (req.body.providerConfigKey === "slack") {
-                console.log("yes it is slack webhoook====");
-                let myAutomation = yield findAutomation(req.body.connectionId);
-                console.log("myAutomation", myAutomation);
-                yield (0, utils_1.sendEmail)({
-                    integrationId: "gmail1234", connectionId: myAutomation.connectionId, actionName: (_a = myAutomation.action) === null || _a === void 0 ? void 0 : _a.appUniqueName
-                }, myAutomation.triggerValue);
+                if (req.body.payload.event.type === "channel_created") {
+                    console.log("yes it is slack webhoook====");
+                    let myAutomation = yield findAutomation(req.body.connectionId);
+                    console.log("myAutomation", myAutomation);
+                    yield (0, utils_1.sendEmail)({
+                        integrationId: myAutomation.actionPerform.integrationId, connectionId: myAutomation.actionPerform.connectionId, actionName: (_a = myAutomation.actionName) === null || _a === void 0 ? void 0 : _a.appUniqueName
+                    }, myAutomation.triggerValue);
+                }
             }
         }
         return res.status(200).json({
@@ -67,7 +76,45 @@ const findAutomation = (connectionId) => __awaiter(void 0, void 0, void 0, funct
         if (!findConn) {
             return null;
         }
-        const findAutom = yield automation_1.default.findOne({ trigger: findConn._id }).populate("trigger").populate("action");
+        const findAutom = yield automation_1.default.aggregate([
+            {
+                $lookup: {
+                    from: "connections",
+                    localField: "action",
+                    foreignField: "_id",
+                    as: "actionPerform"
+                }
+            },
+            { $unwind: "$actionPerform" },
+            {
+                $lookup: {
+                    from: "connections",
+                    localField: "trigger",
+                    foreignField: "_id",
+                    as: "triggerDetail"
+                }
+            },
+            { $unwind: "$triggerDetail" },
+            {
+                $lookup: {
+                    from: "actions",
+                    localField: "actionPerform.actionId",
+                    foreignField: "_id",
+                    as: "actionName"
+                }
+            },
+            { $unwind: "$actionName" },
+            {
+                $lookup: {
+                    from: "actions",
+                    localField: "triggerDetail.actionId",
+                    foreignField: "_id",
+                    as: "triggerName"
+                }
+            },
+            { $unwind: "$triggerName" },
+            { $match: { trigger: new mongodb_1.ObjectId(findConn._id) } }
+        ]);
         return findAutom;
     }
     catch (error) {

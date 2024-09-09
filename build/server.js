@@ -39,6 +39,7 @@ app.post("/api/addAction", action_1.addAction);
 app.post("/api/webhook", webhook_1.webhook);
 app.post("/api/newConnection", connection_1.addConnection);
 app.post("/api/newAutomation", automation_1.newAutomation);
+app.get("/api/automations", automation_1.getAutomation);
 app.post("/api/sendEmail", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, utils_1.sendEmail)(req.body.config, req.body.emailData);
     return res.send("hello");

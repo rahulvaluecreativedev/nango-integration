@@ -13,6 +13,9 @@ exports.sendEmail = void 0;
 const nango_1 = require("./nango");
 const sendEmail = (config, emailData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("inside the sendemail function====");
+        console.log("config===", config);
+        console.log("emilData", emailData);
         yield nango_1.nango.triggerAction(config.integrationId, config.connectionId, config.actionName, {
             from: emailData.from,
             headers: emailData.headers,
