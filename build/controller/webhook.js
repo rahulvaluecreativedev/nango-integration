@@ -32,7 +32,7 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log("slack....");
             }
         }
-        if (webhookType === "forwad") {
+        if (webhookType === "forward") {
             console.log("inside forwad....");
             if (req.body.providerConfigKey === "slack") {
                 console.log("yes it is slack webhoook====");
