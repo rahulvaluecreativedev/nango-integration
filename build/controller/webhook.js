@@ -14,12 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.webhook = void 0;
 const connection_1 = __importDefault(require("../model/connection"));
+const automation_1 = __importDefault(require("../model/automation"));
+const utils_1 = require("../utils");
 const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         console.log("webhook request......", req.body);
         const webhookType = req.body.type;
         if (webhookType === "auth" && req.body.success) {
             yield connection_1.default.findOneAndUpdate({ connectionId: req.body.connectionId }, { active: true });
+        }
+        if (webhookType === "forwad") {
+            let myAutomation = yield findAutomation(webhookType);
+            console.log("myAutomation", myAutomation);
+            yield (0, utils_1.sendEmail)({
+                integrationId: "gmail1234", connectionId: myAutomation.connectionId, actionName: (_a = myAutomation.action) === null || _a === void 0 ? void 0 : _a.appUniqueName
+            }, myAutomation.triggerValue);
         }
         return res.status(200).json({
             success: true,
@@ -35,3 +45,19 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.webhook = webhook;
+const findAutomation = (connectionId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const findConn = yield connection_1.default.findOne({
+            connectionId: connectionId
+        }).lean();
+        if (!findConn) {
+            return null;
+        }
+        const findAutom = yield automation_1.default.findOne({ trigger: findConn._id }).populate("trigger").populate("action");
+        return findAutom;
+    }
+    catch (error) {
+        console.log("error");
+        return null;
+    }
+});
