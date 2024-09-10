@@ -21,6 +21,7 @@ const action_1 = require("./controller/action");
 const webhook_1 = require("./controller/webhook");
 const connection_1 = require("./controller/connection");
 const automation_1 = require("./controller/automation");
+const apps_1 = require("./controller/apps");
 const utils_1 = require("./utils");
 const cors_1 = __importDefault(require("cors"));
 const dbConnection_1 = __importDefault(require("./config/dbConnection"));
@@ -38,6 +39,7 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 app.post("/api/addAction", action_1.addAction);
 app.post("/api/webhook", webhook_1.webhook);
 app.post("/api/newConnection", connection_1.addConnection);
+app.post("/api/addApp", apps_1.addApp);
 app.post("/api/newAutomation", automation_1.newAutomation);
 app.get("/api/automations", automation_1.getAutomation);
 app.post("/api/sendEmail", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -16,7 +16,6 @@ exports.webhook = void 0;
 const connection_1 = __importDefault(require("../model/connection"));
 const automation_1 = __importDefault(require("../model/automation"));
 const utils_1 = require("../utils");
-const mongodb_1 = require("mongodb");
 const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -47,8 +46,8 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     let myAutomation = yield findAutomation(req.body.connectionId);
                     console.log("myAutomation", myAutomation);
                     yield (0, utils_1.sendEmail)({
-                        integrationId: myAutomation.actionPerform.integrationId, connectionId: myAutomation.actionPerform.connectionId, actionName: (_a = myAutomation.actionName) === null || _a === void 0 ? void 0 : _a.actionUniqueName
-                    }, myAutomation.triggerValue);
+                        integrationId: myAutomation.connectionDetail.integrationId, connectionId: myAutomation.connectionDetail.connectionId, actionName: (_a = myAutomation.actionPerformDetail) === null || _a === void 0 ? void 0 : _a.actionUniqueName
+                    }, myAutomation.Actions.actionParams);
                 }
             }
         }
@@ -69,51 +68,35 @@ exports.webhook = webhook;
 const findAutomation = (connectionId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log("inside the find automation===", connectionId);
-        const findConn = yield connection_1.default.findOne({
-            connectionId: connectionId
-        }).lean();
-        console.log("findConn====", findConn);
-        if (!findConn) {
-            return null;
-        }
         const findAutom = yield automation_1.default.aggregate([
             {
                 $lookup: {
                     from: "connections",
-                    localField: "action",
+                    localField: "trigger.connectionId",
                     foreignField: "_id",
-                    as: "actionPerform"
+                    as: "connectionDetail"
                 }
             },
-            { $unwind: "$actionPerform" },
-            {
-                $lookup: {
-                    from: "connections",
-                    localField: "trigger",
-                    foreignField: "_id",
-                    as: "triggerDetail"
-                }
-            },
-            { $unwind: "$triggerDetail" },
+            { $unwind: "$connectionDetail" },
             {
                 $lookup: {
                     from: "actions",
-                    localField: "actionPerform.actionId",
+                    localField: "trigger.actionId",
                     foreignField: "_id",
-                    as: "actionName"
+                    as: "triggerActionDetail"
                 }
             },
-            { $unwind: "$actionName" },
+            { $unwind: "$triggerActionDetail" },
             {
                 $lookup: {
                     from: "actions",
-                    localField: "triggerDetail.actionId",
+                    localField: "Actions.actionId",
                     foreignField: "_id",
-                    as: "triggerName"
+                    as: "actionPerformDetail"
                 }
             },
-            { $unwind: "$triggerName" },
-            { $match: { trigger: new mongodb_1.ObjectId(findConn._id) } }
+            { $unwind: "$actionPerformDetail" },
+            { $match: { "connectionDetail.connectionId": connectionId } }
         ]);
         return findAutom[0];
     }

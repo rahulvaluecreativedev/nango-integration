@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const ActionSchema = new mongoose_1.Schema({
-    appUniqueName: {
-        type: String,
-        required: true,
+    appId: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "App"
     },
     actionName: {
         type: String
