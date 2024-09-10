@@ -39,42 +39,42 @@ const getAutomation = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             {
                 $lookup: {
                     from: "connections",
-                    localField: "action",
+                    localField: "Actions.connectionId",
                     foreignField: "_id",
-                    as: "actionPerform"
+                    as: "actionConnectionDetail"
                 }
             },
-            { $unwind: "$actionPerform" },
+            { $unwind: "$actionConnectionDetail" },
             {
                 $lookup: {
                     from: "connections",
-                    localField: "trigger",
+                    localField: "trigger.connectionId",
                     foreignField: "_id",
-                    as: "triggerDetail"
+                    as: "triggerConnectionDetail"
                 }
             },
-            { $unwind: "$triggerDetail" },
+            { $unwind: "$triggerConnectionDetail" },
             {
                 $lookup: {
                     from: "actions",
-                    localField: "actionPerform.actionId",
+                    localField: "trigger.actionId",
                     foreignField: "_id",
-                    as: "actionName"
+                    as: "triggerActionDetail"
                 }
             },
-            { $unwind: "$actionName" },
+            { $unwind: "$triggerActionDetail" },
             {
                 $lookup: {
                     from: "actions",
-                    localField: "triggerDetail.actionId",
+                    localField: "Actions.actionId",
                     foreignField: "_id",
-                    as: "triggerName"
+                    as: "actionPerformDetail"
                 }
             },
-            { $unwind: "$triggerName" },
+            { $unwind: "$actionPerformDetail" },
             { $match: {} }
         ]);
-        console.log("data", data);
+        // console.log("data", data)
         return res.status(201).json({
             success: true,
             message: "Fetch Data",

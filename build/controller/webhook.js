@@ -46,7 +46,7 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     let myAutomation = yield findAutomation(req.body.connectionId);
                     console.log("myAutomation", myAutomation);
                     yield (0, utils_1.sendEmail)({
-                        integrationId: myAutomation.connectionDetail.integrationId, connectionId: myAutomation.connectionDetail.connectionId, actionName: (_a = myAutomation.actionPerformDetail) === null || _a === void 0 ? void 0 : _a.actionUniqueName
+                        integrationId: myAutomation.actionConnectionDetail.integrationId, connectionId: myAutomation.actionConnectionDetail.connectionId, actionName: (_a = myAutomation.actionPerformDetail) === null || _a === void 0 ? void 0 : _a.actionUniqueName
                     }, myAutomation.Actions.actionParams);
                 }
             }
@@ -74,10 +74,19 @@ const findAutomation = (connectionId) => __awaiter(void 0, void 0, void 0, funct
                     from: "connections",
                     localField: "Actions.connectionId",
                     foreignField: "_id",
-                    as: "connectionDetail"
+                    as: "actionConnectionDetail"
                 }
             },
-            { $unwind: "$connectionDetail" },
+            { $unwind: "$actionConnectionDetail" },
+            {
+                $lookup: {
+                    from: "connections",
+                    localField: "trigger.connectionId",
+                    foreignField: "_id",
+                    as: "triggerConnectionDetail"
+                }
+            },
+            { $unwind: "$triggerConnectionDetail" },
             {
                 $lookup: {
                     from: "actions",
@@ -96,7 +105,7 @@ const findAutomation = (connectionId) => __awaiter(void 0, void 0, void 0, funct
                 }
             },
             { $unwind: "$actionPerformDetail" },
-            { $match: { "connectionDetail.connectionId": connectionId } }
+            { $match: { "triggerConnectionDetail.connectionId": connectionId } }
         ]);
         return findAutom[0];
     }
