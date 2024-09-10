@@ -72,7 +72,7 @@ const findAutomation = (connectionId) => __awaiter(void 0, void 0, void 0, funct
             {
                 $lookup: {
                     from: "connections",
-                    localField: "trigger.connectionId",
+                    localField: "Actions.connectionId",
                     foreignField: "_id",
                     as: "connectionDetail"
                 }
