@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const webhook_1 = __importDefault(require("./webhook"));
 const app_1 = __importDefault(require("./app"));
 const connection_1 = __importDefault(require("./connection"));
-const item_1 = __importDefault(require("./item"));
+const action_1 = __importDefault(require("./action"));
 const automation_1 = __importDefault(require("./automation"));
 const authentication_1 = __importDefault(require("./authentication"));
 const routers = [
@@ -27,8 +27,8 @@ const routers = [
         handler: connection_1.default
     },
     {
-        path: "/api/item",
-        handler: item_1.default
+        path: "/api/action",
+        handler: action_1.default
     },
     {
         path: "/api/automation",

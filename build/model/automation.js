@@ -15,9 +15,9 @@ const AutomationSchema = new mongoose_1.Schema({
         },
         actionId: {
             type: mongoose_1.Schema.Types.ObjectId,
-            ref: "Item"
+            ref: "Action"
         },
-        variableValues: {
+        paramactionParams: {
             type: Object
         },
     },
@@ -31,9 +31,9 @@ const AutomationSchema = new mongoose_1.Schema({
         },
         actionId: {
             type: mongoose_1.Schema.Types.ObjectId,
-            ref: "Item"
+            ref: "Action"
         },
-        variableValues: {
+        actionParams: {
             type: Object
         },
     },

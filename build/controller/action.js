@@ -12,9 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addAction = void 0;
+exports.addItem = void 0;
 const action_1 = __importDefault(require("../model/action"));
-const addAction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const addItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield action_1.default.create(req.body);
         return res.status(201).json({
@@ -31,4 +31,4 @@ const addAction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
 });
-exports.addAction = addAction;
+exports.addItem = addItem;

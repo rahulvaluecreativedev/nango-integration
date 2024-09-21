@@ -2,6 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const router = (0, express_1.Router)();
-const connection_1 = require("../controller/connection");
-router.post("/create", connection_1.addConnection);
+const action_1 = require("../controller/action");
+router.post("/create", action_1.addItem);
 exports.default = router;
