@@ -17,13 +17,9 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const port = process.env.PORT_NUMBER || 7001;
 const app = (0, express_1.default)();
-const action_1 = require("./controller/action");
-const webhook_1 = require("./controller/webhook");
-const connection_1 = require("./controller/connection");
-const automation_1 = require("./controller/automation");
-const apps_1 = require("./controller/apps");
-const utils_1 = require("./utils");
+const nango_utils_1 = require("./nango.utils");
 const cors_1 = __importDefault(require("cors"));
+const index_1 = __importDefault(require("./routes/index"));
 const dbConnection_1 = __importDefault(require("./config/dbConnection"));
 (function () {
     return __awaiter(this, void 0, void 0, function* () {
@@ -36,14 +32,11 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.send("success");
 }));
-app.post("/api/addAction", action_1.addAction);
-app.post("/api/webhook", webhook_1.webhook);
-app.post("/api/newConnection", connection_1.addConnection);
-app.post("/api/addApp", apps_1.addApp);
-app.post("/api/newAutomation", automation_1.newAutomation);
-app.get("/api/automations", automation_1.getAutomation);
+index_1.default.map(route => {
+    app.use(route.path, route.handler);
+});
 app.post("/api/sendEmail", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, utils_1.sendEmail)(req.body.config, req.body.emailData);
+    yield (0, nango_utils_1.sendEmail)(req.body.config, req.body.emailData);
     return res.send("hello");
 }));
 app.listen(port, () => {

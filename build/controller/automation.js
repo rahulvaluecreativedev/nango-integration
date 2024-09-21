@@ -12,9 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAutomation = exports.newAutomation = void 0;
+exports.getAutomation = exports.createAutomation = void 0;
 const automation_1 = __importDefault(require("../model/automation"));
-const newAutomation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createAutomation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield automation_1.default.create(req.body);
         return res.status(201).json({
@@ -31,7 +31,7 @@ const newAutomation = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
 });
-exports.newAutomation = newAutomation;
+exports.createAutomation = createAutomation;
 const getAutomation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log("start queryy...");

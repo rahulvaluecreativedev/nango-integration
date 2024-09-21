@@ -15,14 +15,10 @@ const AutomationSchema = new mongoose_1.Schema({
         },
         actionId: {
             type: mongoose_1.Schema.Types.ObjectId,
-            ref: "Action"
+            ref: "Item"
         },
-        actionParams: {
+        variableValues: {
             type: Object
-        },
-        type: {
-            type: String,
-            enum: ["Action", "Trigger"]
         },
     },
     Actions: {
@@ -35,14 +31,10 @@ const AutomationSchema = new mongoose_1.Schema({
         },
         actionId: {
             type: mongoose_1.Schema.Types.ObjectId,
-            ref: "Action"
+            ref: "Item"
         },
-        actionParams: {
+        variableValues: {
             type: Object
-        },
-        type: {
-            type: String,
-            enum: ["Action", "Trigger"]
         },
     },
     isActive: {
@@ -61,7 +53,14 @@ const AutomationSchema = new mongoose_1.Schema({
             type: mongoose_1.Schema.Types.ObjectId,
             ref: "App"
         }
-    ]
+    ],
+    status: {
+        type: String,
+        enum: ["draft", "stopped", "active", "cancel"]
+    },
+    schedule: {
+        type: Number
+    }
 }, {
     timestamps: true
 });

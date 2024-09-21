@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.webhook = void 0;
 const connection_1 = __importDefault(require("../model/connection"));
 const automation_1 = __importDefault(require("../model/automation"));
-const utils_1 = require("../utils");
+const nango_utils_1 = require("../nango.utils");
 const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     try {
         console.log("webhook request......", req.body);
         const webhookType = req.body.type;
@@ -40,14 +40,18 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         if (webhookType === "forward") {
             console.log("inside forwad....");
+            let myAutomation = yield findAutomation(req.body.connectionId);
+            console.log("myAutomation", myAutomation);
             if (req.body.providerConfigKey === "slack") {
-                if (req.body.payload.event.type === "channel_created") {
+                if (req.body.payload.event.type === "channel_created" && myAutomation.triggerActionDetail.actionUniqueName === "channel_created") {
                     console.log("yes it is slack webhoook====");
-                    let myAutomation = yield findAutomation(req.body.connectionId);
-                    console.log("myAutomation", myAutomation);
-                    yield (0, utils_1.sendEmail)({
-                        integrationId: myAutomation.actionConnectionDetail.integrationId, connectionId: myAutomation.actionConnectionDetail.connectionId, actionName: (_a = myAutomation.actionPerformDetail) === null || _a === void 0 ? void 0 : _a.actionUniqueName
-                    }, myAutomation.Actions.actionParams);
+                    if (((_a = myAutomation === null || myAutomation === void 0 ? void 0 : myAutomation.actionPerformDetail) === null || _a === void 0 ? void 0 : _a.actionUniqueName) === "send-email") {
+                        yield (0, nango_utils_1.sendEmail)({
+                            integrationId: myAutomation.actionConnectionDetail.integrationId, connectionId: myAutomation.actionConnectionDetail.connectionId, actionName: (_b = myAutomation.actionPerformDetail) === null || _b === void 0 ? void 0 : _b.actionUniqueName
+                        }, myAutomation.Actions.actionParams);
+                    }
+                }
+                if (req.body.payload.event.type === "") {
                 }
             }
         }
@@ -105,7 +109,7 @@ const findAutomation = (connectionId) => __awaiter(void 0, void 0, void 0, funct
                 }
             },
             { $unwind: "$actionPerformDetail" },
-            { $match: { "triggerConnectionDetail.connectionId": connectionId } }
+            { $match: { "triggerConnectionDetail.connectionId": connectionId, isActive: true, isStopped: false } }
         ]);
         return findAutom[0];
     }

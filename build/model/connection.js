@@ -2,9 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const ConnectionSchema = new mongoose_1.Schema({
-    // title:{
-    //     type:String
-    // },
     connectionId: {
         type: String,
         required: true,
@@ -12,14 +9,10 @@ const ConnectionSchema = new mongoose_1.Schema({
     integrationId: {
         type: String
     },
-    // actionId:{
-    //     type: Schema.Types.ObjectId,
-    //     ref: "Action"
-    // },
-    // type:{
-    //     type:String,
-    //     enum:["Action","Trigger"]
-    // },
+    appId: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "App"
+    },
     userId: {
         type: Number
     },
